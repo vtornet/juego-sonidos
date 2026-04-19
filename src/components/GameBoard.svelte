@@ -2,6 +2,7 @@
   import { game, getSoundEmojis, getCurrentLevel } from '../stores/game';
   import ProgressBar from './ProgressBar.svelte';
 
+  const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
   const TOTAL_SOUNDS = 42;
   const TOTAL_ERRORS = 6;
 
@@ -44,7 +45,7 @@
         console.log(`Botón ${i} es MORTAL (sin sonido normal)`);
       } else {
         // Posición normal: asignar sonido
-        const url = `/sounds/${selected[soundIdx]}.mp3`;
+        const url = `${BASE_PATH}sounds/${selected[soundIdx]}.mp3`;
         soundUrls.push(url);
         console.log(`Botón ${i}: ${url}`);
         soundIdx++;
@@ -53,7 +54,7 @@
 
     // Sonido mortal
     const errorIdx = Math.floor(Math.random() * TOTAL_ERRORS) + 1;
-    mortalSoundUrl = `/sounds/Error${errorIdx}.mp3`;
+    mortalSoundUrl = `${BASE_PATH}sounds/Error${errorIdx}.mp3`;
 
     console.log('--- Carga completa. Mortal index:', mortalIndex, 'URL mortal:', mortalSoundUrl);
   }

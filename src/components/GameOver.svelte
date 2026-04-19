@@ -2,12 +2,13 @@
   import { onMount } from 'svelte';
   import { game } from '../stores/game';
 
+  const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
   let canRetry = false;
 
   onMount(() => {
     // Reproducir sonido de error
     const errorIdx = Math.floor(Math.random() * 6) + 1;
-    const audio = new Audio(`/sounds/Error${errorIdx}.mp3`);
+    const audio = new Audio(`${BASE_PATH}sounds/Error${errorIdx}.mp3`);
     audio.volume = 0.8;
     audio.play();
 
