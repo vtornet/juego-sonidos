@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { game, getSoundEmojis, getCurrentLevel } from '../stores/game';
   import { audioManager } from '../stores/audioManager';
   import ProgressBar from './ProgressBar.svelte';
@@ -7,69 +6,69 @@
   let soundUrls: string[] = [];
   let mortalSoundUrl = '';
   let isPlaying = false;
+  let lastDifficulty: string | null = null;
+  let lastLevelIndex = -1;
 
-  function shuffleArray<T>(array: T[]): T[] {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  // Cargar sonidos solo cuando realmente cambia el nivel
+  $: if ($game.state === 'playing' && $game.difficulty) {
+    const diffKey = $game.difficulty;
+    const levelIdx = $game.currentLevelIndex;
+
+    // Solo recargar si cambió dificultad o nivel
+    if (lastDifficulty !== diffKey || lastLevelIndex !== levelIdx) {
+      lastDifficulty = diffKey;
+      lastLevelIndex = levelIdx;
+
+      const level = getCurrentLevel($game.difficulty, $game.currentLevelIndex);
+      loadSounds(level.totalButtons);
     }
-    return shuffled;
   }
 
-  $: if ($game.state === 'playing' && $game.difficulty) {
-    const level = getCurrentLevel($game.difficulty, $game.currentLevelIndex);
-    loadSounds(level.totalButtons);
+  // Reiniciar AudioManager cuando es nuevo juego
+  $: if ($game.isNewGame) {
+    audioManager.reset();
+    console.log('🎮 Nuevo juego - AudioManager reiniciado. Pool:', audioManager.getStats());
   }
 
   function loadSounds(count: number) {
     const mortalIndex = $game.mortalIndex;
 
-    // Obtener sonidos normales del AudioManager (sin repetir)
+    // Obtener sonidos normales SIN repetir
     const normalSounds = audioManager.getNormalSounds(count - 1);
 
-    console.log('📊 Stats:', audioManager.getStats());
-    console.log('🔊 Sonidos normales cargados:', normalSounds.length);
+    console.log(`🔊 Cargando ${count} botones. Mortal en índice ${mortalIndex}`);
+    console.log('📊 Stats tras cargar:', audioManager.getStats());
+    console.log('Sonidos normales:', normalSounds.map(s => s.split('/').pop()));
 
-    // Crear array de URLs: el mortal no tendrá sonido normal
+    // Crear array de URLs
     soundUrls = [];
     let soundIdx = 0;
 
     for (let i = 0; i < count; i++) {
       if (i === mortalIndex) {
         soundUrls.push('');
-        console.log(`Botón ${i} es MORTAL`);
       } else {
         soundUrls.push(normalSounds[soundIdx]);
         soundIdx++;
       }
     }
 
-    // Sonido mortal del AudioManager
     mortalSoundUrl = audioManager.getErrorSound();
-    console.log('Mortal URL:', mortalSoundUrl);
   }
 
   function handleButtonClick(index: number) {
     if ($game.pressedButtons.has(index) || isPlaying) return;
 
     if (index === $game.mortalIndex) {
-      // Botón mortal: solo cambiar estado
       game.pressButton(index);
       return;
     }
 
-    // Botón normal: reproducir sonido
     isPlaying = true;
     const audio = new Audio(soundUrls[index]);
     audio.volume = 0.6;
-    audio.play();
+    audio.play().catch(e => console.error('Error reproduciendo:', e));
     audio.onended = () => {
-      isPlaying = false;
-      game.pressButton(index);
-    };
-    audio.onerror = () => {
-      console.error('Error cargando audio:', soundUrls[index]);
       isPlaying = false;
       game.pressButton(index);
     };
@@ -77,12 +76,6 @@
 
   function getEmoji(index: number): string {
     return ['🔔', '🎺', '🥁', '🎸', '🎹', '🔊', '🎤', '🎷', '🪘', '🎻'][index % 10];
-  }
-
-  // Reiniciar AudioManager solo cuando es un nuevo juego
-  $: if ($game.isNewGame) {
-    audioManager.reset();
-    console.log('🎮 Nuevo juego - AudioManager reiniciado');
   }
 </script>
 
