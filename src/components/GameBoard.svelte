@@ -94,12 +94,12 @@
   }
 </script>
 
-<div class="card">
+<div class="card game-card">
   {#if $game.difficulty && $game.state === 'playing'}
     {@const level = getCurrentLevel($game.difficulty, $game.currentLevelIndex)}
     <ProgressBar current={$game.correctPressed} total={level.goal} level={level.level} />
 
-    <p class="subtitle" style="margin-top: 1rem;">¡Evita el SONIDO MORTAL!</p>
+    <p class="subtitle" style="margin-top: 0.5rem;">¡Evita el SONIDO MORTAL!</p>
 
     <div class="game-grid">
       {#each Array(level.totalButtons) as _, i}
@@ -115,7 +115,7 @@
     </div>
 
     {#if isPlaying}
-      <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+      <p style="text-align: center; margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">
         🔊 Reproduciendo sonido...
       </p>
     {/if}
@@ -123,20 +123,24 @@
 </div>
 
 <style>
+  .game-card {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
   .game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 0.75rem;
-    max-width: 500px;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 0.5rem;
     margin: 0 auto;
   }
 
   .sound-btn {
-    width: 90px;
-    height: 90px;
+    width: 100%;
+    aspect-ratio: 1;
     padding: 0;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.15s ease;
     background: var(--bg-tertiary);
@@ -144,7 +148,7 @@
   }
 
   .sound-btn:hover:not(:disabled) {
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 
   .sound-btn:active:not(:disabled) {
@@ -161,5 +165,29 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Móvil */
+  @media (max-width: 480px) {
+    .game-card {
+      padding: 0.75rem;
+      border-radius: 12px;
+    }
+
+    .game-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem !important;
+    }
+  }
+
+  /* Móvil pequeño */
+  @media (max-width: 360px) {
+    .game-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>

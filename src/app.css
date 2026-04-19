@@ -192,3 +192,35 @@ body {
 .difficulty-easy { border-left: 4px solid var(--accent-success); }
 .difficulty-medium { border-left: 4px solid var(--accent-warning); }
 .difficulty-hard { border-left: 4px solid var(--accent-danger); }
+
+/* Móvil */
+@media (max-width: 480px) {
+  #app {
+    padding: 0.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .difficulty-btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
