@@ -1,10 +1,8 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { game, getSoundEmojis, getCurrentLevel } from '../stores/game';
+  import { audioManager } from '../stores/audioManager';
   import ProgressBar from './ProgressBar.svelte';
-
-  const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
-  const TOTAL_SOUNDS = 42;
-  const TOTAL_ERRORS = 6;
 
   let soundUrls: string[] = [];
   let mortalSoundUrl = '';
@@ -25,14 +23,13 @@
   }
 
   function loadSounds(count: number) {
-    // El mortalIndex viene del store
     const mortalIndex = $game.mortalIndex;
 
-    // Índices de sonidos normales (necesitamos count - 1 sonidos normales)
-    const allIndices = Array.from({ length: TOTAL_SOUNDS }, (_, i) => i + 1);
-    const selected = shuffleArray(allIndices).slice(0, count - 1);
+    // Obtener sonidos normales del AudioManager (sin repetir)
+    const normalSounds = audioManager.getNormalSounds(count - 1);
 
-    console.log('Sonidos normales seleccionados:', selected);
+    console.log('📊 Stats:', audioManager.getStats());
+    console.log('🔊 Sonidos normales cargados:', normalSounds.length);
 
     // Crear array de URLs: el mortal no tendrá sonido normal
     soundUrls = [];
@@ -40,30 +37,24 @@
 
     for (let i = 0; i < count; i++) {
       if (i === mortalIndex) {
-        // Posición mortal: sin sonido normal
         soundUrls.push('');
-        console.log(`Botón ${i} es MORTAL (sin sonido normal)`);
+        console.log(`Botón ${i} es MORTAL`);
       } else {
-        // Posición normal: asignar sonido
-        const url = `${BASE_PATH}sounds/${selected[soundIdx]}.mp3`;
-        soundUrls.push(url);
-        console.log(`Botón ${i}: ${url}`);
+        soundUrls.push(normalSounds[soundIdx]);
         soundIdx++;
       }
     }
 
-    // Sonido mortal
-    const errorIdx = Math.floor(Math.random() * TOTAL_ERRORS) + 1;
-    mortalSoundUrl = `${BASE_PATH}sounds/Error${errorIdx}.mp3`;
-
-    console.log('--- Carga completa. Mortal index:', mortalIndex, 'URL mortal:', mortalSoundUrl);
+    // Sonido mortal del AudioManager
+    mortalSoundUrl = audioManager.getErrorSound();
+    console.log('Mortal URL:', mortalSoundUrl);
   }
 
   function handleButtonClick(index: number) {
     if ($game.pressedButtons.has(index) || isPlaying) return;
 
     if (index === $game.mortalIndex) {
-      // Botón mortal: solo cambiar estado (GameOver reproduce el sonido)
+      // Botón mortal: solo cambiar estado
       game.pressButton(index);
       return;
     }
@@ -77,11 +68,20 @@
       isPlaying = false;
       game.pressButton(index);
     };
+    audio.onerror = () => {
+      console.error('Error cargando audio:', soundUrls[index]);
+      isPlaying = false;
+      game.pressButton(index);
+    };
   }
 
   function getEmoji(index: number): string {
     return ['🔔', '🎺', '🥁', '🎸', '🎹', '🔊', '🎤', '🎷', '🪘', '🎻'][index % 10];
   }
+
+  onMount(() => {
+    audioManager.reset();
+  });
 </script>
 
 <div class="card">

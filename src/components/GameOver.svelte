@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { game } from '../stores/game';
+  import { audioManager } from '../stores/audioManager';
 
-  const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
   let canRetry = false;
 
   onMount(() => {
-    // Reproducir sonido de error
-    const errorIdx = Math.floor(Math.random() * 6) + 1;
-    const audio = new Audio(`${BASE_PATH}sounds/Error${errorIdx}.mp3`);
+    // Reproducir sonido de error del AudioManager
+    const errorSound = audioManager.getErrorSound();
+    const audio = new Audio(errorSound);
     audio.volume = 0.8;
     audio.play();
 
@@ -20,10 +20,12 @@
 
   function retry() {
     if (!canRetry) return;
+    audioManager.reset(); // Reiniciar pool al reintentar
     game.retry();
   }
 
   function goToMenu() {
+    audioManager.reset();
     game.goToMenu();
   }
 </script>
