@@ -1,5 +1,34 @@
 <script lang="ts">
   import { game } from '../stores/game';
+  import { shareResult, canUseNativeShare } from '../stores/share';
+
+  let shareSuccess = false;
+  let shareText = '📤 COMPARTIR';
+
+  async function handleShare() {
+    const elapsed = $game.startTime > 0 ? Math.round((Date.now() - $game.startTime) / 1000) : 0;
+
+    const success = await shareResult({
+      difficulty: $game.difficulty || 'easy',
+      level: $game.currentLevelIndex + 1,
+      time: elapsed,
+      result: 'victory'
+    });
+
+    if (success) {
+      if (canUseNativeShare()) {
+        shareText = '✓ Compartido';
+        shareSuccess = true;
+      } else {
+        shareText = '✓ Copiado al portapapeles';
+        shareSuccess = true;
+      }
+      setTimeout(() => {
+        shareText = '📤 COMPARTIR';
+        shareSuccess = false;
+      }, 2000);
+    }
+  }
 
   function playAgain() {
     game.retry();
@@ -29,6 +58,9 @@
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <button class="btn btn-primary" on:click={handleShare} style:background={shareSuccess ? 'var(--accent-success)' : ''}>
+      {shareText}
+    </button>
     <button class="btn btn-success" on:click={playAgain}>
       🔄 JUGAR OTRA VEZ
     </button>

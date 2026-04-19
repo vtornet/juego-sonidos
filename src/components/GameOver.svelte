@@ -2,25 +2,49 @@
   import { onMount } from 'svelte';
   import { game } from '../stores/game';
   import { audioManager } from '../stores/audioManager';
+  import { shareResult, canUseNativeShare } from '../stores/share';
 
   let canRetry = false;
+  let shareSuccess = false;
+  let shareText = '📤 COMPARTIR';
 
   onMount(() => {
-    // Reproducir sonido de error del AudioManager
     const errorSound = audioManager.getErrorSound();
     const audio = new Audio(errorSound);
     audio.volume = 0.8;
     audio.play();
 
-    // Habilitar reintentar cuando termine
     audio.onended = () => {
       canRetry = true;
     };
   });
 
+  async function handleShare() {
+    const success = await shareResult({
+      difficulty: $game.difficulty || 'easy',
+      level: $game.currentLevelIndex + 1,
+      time: 0,
+      result: 'gameover'
+    });
+
+    if (success) {
+      if (canUseNativeShare()) {
+        shareText = '✓ Compartido';
+        shareSuccess = true;
+      } else {
+        shareText = '✓ Copiado al portapapeles';
+        shareSuccess = true;
+      }
+      setTimeout(() => {
+        shareText = '📤 COMPARTIR';
+        shareSuccess = false;
+      }, 2000);
+    }
+  }
+
   function retry() {
     if (!canRetry) return;
-    game.retry();  // isNewGame se maneja en el store
+    game.retry();
   }
 
   function goToMenu() {
@@ -54,6 +78,9 @@
       style:opacity={canRetry ? 1 : 0.5}
     >
       {canRetry ? '🔄 REINTENTAR' : '🔊 Esperando sonido...'}
+    </button>
+    <button class="btn btn-primary" on:click={handleShare} style:background={shareSuccess ? 'var(--accent-success)' : ''}>
+      {shareText}
     </button>
     <button class="btn btn-secondary" on:click={goToMenu}>
       🏠 INICIO
