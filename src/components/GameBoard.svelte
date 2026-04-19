@@ -90,7 +90,7 @@
   }
 
   function getMemeUrl(index: number): string {
-    return `${BASE_PATH}memes/${memeIndices[index]}.jpg`;
+    return `${BASE_PATH}memes/${memeIndices[index]}.png`;
   }
 </script>
 

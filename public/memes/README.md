@@ -3,9 +3,9 @@
 ## Especificaciones
 
 - **Dimensiones**: 256x256 px (cuadradas)
-- **Formato**: JPG (recomendado) o PNG
-- **Tamaño**: < 50KB cada una
-- **Nombres**: 1.jpg, 2.jpg, 3.jpg, ... hasta 42.jpg
+- **Formato**: PNG
+- **Tamaño**: < 100KB cada una
+- **Nombres**: 1.png, 2.png, 3.png, ... hasta 42.png
 
 ## Ubicación
 
