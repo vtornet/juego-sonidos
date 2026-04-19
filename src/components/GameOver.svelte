@@ -20,12 +20,10 @@
 
   function retry() {
     if (!canRetry) return;
-    audioManager.reset(); // Reiniciar pool al reintentar
-    game.retry();
+    game.retry();  // isNewGame se maneja en el store
   }
 
   function goToMenu() {
-    audioManager.reset();
     game.goToMenu();
   }
 </script>

@@ -42,6 +42,7 @@ interface GameData {
   mortalIndex: number;
   pressedButtons: Set<number>;
   startTime: number;
+  isNewGame: boolean;  // Para saber si se debe reiniciar el AudioManager
 }
 
 function createGameStore() {
@@ -53,6 +54,7 @@ function createGameStore() {
     mortalIndex: -1,
     pressedButtons: new Set(),
     startTime: 0,
+    isNewGame: false,
   });
 
   return {
@@ -67,6 +69,7 @@ function createGameStore() {
         mortalIndex: Math.floor(Math.random() * LEVELS[difficulty][0].totalButtons),
         pressedButtons: new Set(),
         startTime: Date.now(),
+        isNewGame: true,  // Marcar como nuevo juego
       }));
     },
     pressButton: (buttonIndex: number) => {
@@ -77,7 +80,7 @@ function createGameStore() {
         const currentLevel = LEVELS[data.difficulty!][data.currentLevelIndex];
 
         if (buttonIndex === data.mortalIndex) {
-          return { ...data, state: 'gameover' };
+          return { ...data, state: 'gameover', isNewGame: false };
         }
 
         const newPressed = new Set(data.pressedButtons);
@@ -86,12 +89,12 @@ function createGameStore() {
 
         if (newCorrect >= currentLevel.goal) {
           if (data.currentLevelIndex >= LEVELS[data.difficulty!].length - 1) {
-            return { ...data, state: 'victory', correctPressed: newCorrect, pressedButtons: newPressed };
+            return { ...data, state: 'victory', correctPressed: newCorrect, pressedButtons: newPressed, isNewGame: false };
           }
-          return { ...data, state: 'levelComplete', correctPressed: newCorrect, pressedButtons: newPressed };
+          return { ...data, state: 'levelComplete', correctPressed: newCorrect, pressedButtons: newPressed, isNewGame: false };
         }
 
-        return { ...data, correctPressed: newCorrect, pressedButtons: newPressed };
+        return { ...data, correctPressed: newCorrect, pressedButtons: newPressed, isNewGame: false };
       });
     },
     goToMenu: () => {
@@ -103,6 +106,7 @@ function createGameStore() {
         mortalIndex: -1,
         pressedButtons: new Set(),
         startTime: 0,
+        isNewGame: false,
       });
     },
     retry: () => {
@@ -117,6 +121,7 @@ function createGameStore() {
           mortalIndex: Math.floor(Math.random() * currentLevel.totalButtons),
           pressedButtons: new Set(),
           startTime: Date.now(),
+          isNewGame: true,  // Reintentar es un nuevo juego
         };
       });
     },
@@ -131,6 +136,7 @@ function createGameStore() {
           correctPressed: 0,
           mortalIndex: Math.floor(Math.random() * LEVELS[data.difficulty][nextLevelIndex].totalButtons),
           pressedButtons: new Set(),
+          isNewGame: false,  // No es un juego nuevo, solo siguiente nivel
         };
       });
     },

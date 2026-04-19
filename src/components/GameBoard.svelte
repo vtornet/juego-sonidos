@@ -79,9 +79,11 @@
     return ['🔔', '🎺', '🥁', '🎸', '🎹', '🔊', '🎤', '🎷', '🪘', '🎻'][index % 10];
   }
 
-  onMount(() => {
+  // Reiniciar AudioManager solo cuando es un nuevo juego
+  $: if ($game.isNewGame) {
     audioManager.reset();
-  });
+    console.log('🎮 Nuevo juego - AudioManager reiniciado');
+  }
 </script>
 
 <div class="card">
