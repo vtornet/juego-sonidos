@@ -208,3 +208,87 @@ src/
 3. **Botones correctos se desactivan** tras ser pulsados
 4. **Siempre hay 1 sonido mortal** mínimo (imposible meta = botones totales)
 5. **Victoria** = completar todos los niveles de la dificultad
+
+---
+
+## 🚀 Mejoras Futuras Planificadas
+
+### ⭐ Prioridad Alta (Próximas a implementar)
+
+| Mejora | Descripción | Impacto |
+|--------|-------------|---------|
+| **Guardar mejores tiempos** | localStorage por dificultad | Da motivo para mejorar |
+| **Efectos visuales** | Confeti al ganar, shake al fallar | Satisfacción visual |
+| **Vibración móvil** | Haptic feedback al pulsar | Mejora experiencia táctil |
+
+### 🎮 Jugabilidad
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Modo supervivencia** | Niveles infinitos con dificultad creciente |
+| **Modo contrarreloj** | Completar antes de que acabe el tiempo |
+| **Power-ups** | Eliminar un botón, pista del mortal, inmunidad temporal |
+| **Combo multiplier** | Puntos extra por aciertos rápidos seguidos |
+
+### 🏆 Progresión y Logros
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Racha de victorias** | Contador de victorias consecutivas |
+| **Logros** | "Primera victoria", "Sin errores", "Superviviente" |
+| **Estadísticas** | Partidas jugadas, % acierto global, tiempo total |
+| **Sistema de puntos** | Puntuación basada en tiempo y errores |
+
+### ✨ Efectos Visuales
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Confeti** al ganar | Satisfacción visual |
+| **Shake** al fallar | Feedback claro de error |
+| **Partículas** al pulsar correcto | Feedback instantáneo |
+| **Transiciones** suaves entre niveles | Experiencia pulida |
+| **Animaciones de entrada** para botones | Profundidad visual |
+
+### 📱 Experiencia Móvil
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Vibración** (Haptic Feedback) | Respuesta táctil al pulsar |
+| **Prevención de accidental** | Confirmación para salir mid-juego |
+| **Modo alto contraste** | Accesibilidad |
+| **Gestos** swipe para cambiar nivel | Navegación intuitiva |
+
+### 🔊 Audio
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Música de fondo** suave | Ambiente inmersivo |
+| **Efecto de tensión** cerca del final | Emoción creciente |
+| **Control de volumen** | Accesibilidad |
+| **Más packs de sonidos** | Variedad de contenido |
+
+### 🌐 Social
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Retar a amigo** con link específico | Viralidad |
+| **Ranking semanal** (requiere backend) | Competencia global |
+| **Compartir logro específico** | "Llegué al nivel 5 en difícil" |
+| **Avatar de perfil** | Personalización |
+
+### 🔧 Técnico
+
+| Mejora | Descripción |
+|--------|-------------|
+| **Sistema de packs de memes** | Elegir qué set de imágenes usar |
+| **Temas personalizables** | Colores, estilos |
+| **Optimización de carga** | Lazy loading de imágenes |
+| **Analytics** | Métricas de uso |
+| **A/B testing** | Probar mecánicas |
+
+### 📊 Plan de Implementación
+
+1. **Fase 1** (Inmediata): Guardar tiempos, efectos visuales, vibración
+2. **Fase 2** (Corto plazo): Logros, estadísticas, rachas
+3. **Fase 3** (Medio plazo): Modos de juego adicionales
+4. **Fase 4** (Largo plazo): Backend para rankings y multijugador
