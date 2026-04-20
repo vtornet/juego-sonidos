@@ -6,7 +6,7 @@ const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
 // Configuración de audios - añade más aquí para expandir
 export const AUDIO_CONFIG = {
   // Audios normales (se irán añadiendo)
-  normalCount: 42,  // Cantidad de audios normales (1.mp3 - 42.mp3)
+  normalCount: 53,  // Cantidad de audios normales (1.mp3 - 55.mp3)
 
   // Audios de error (siempre fijos a 6 por diseño)
   errorCount: 6,    // Error1.mp3 - Error6.mp3
