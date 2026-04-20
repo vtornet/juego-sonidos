@@ -26,10 +26,9 @@
     }
   }
 
-  // Reiniciar AudioManager cuando es nuevo juego
-  $: if ($game.isNewGame) {
-    audioManager.reset();
-    console.log('🎮 Nuevo juego - AudioManager reiniciado. Pool:', audioManager.getStats());
+  // Mostrar estadísticas cuando cambia el estado
+  $: if ($game.state === 'playing' && $game.difficulty) {
+    console.log('📊 Pool restante:', audioManager.getStats().remainingNormal);
   }
 
   function loadSounds(count: number) {

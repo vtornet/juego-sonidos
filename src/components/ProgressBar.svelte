@@ -4,9 +4,6 @@
   export let level: number;
   export let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
 
-  const percentage = (current / total) * 100;
-  const remaining = total - current;
-
   const difficultyConfig = {
     easy: { name: 'FÁCIL', emoji: '🔰', color: '#00d9a5' },
     medium: { name: 'MEDIO', emoji: '🔥', color: '#ffd369' },
@@ -14,6 +11,8 @@
   };
 
   $: diffConfig = difficultyConfig[difficulty];
+  $: percentage = (current / total) * 100;
+  $: remaining = total - current;
 </script>
 
 <div class="progress-container">

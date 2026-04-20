@@ -1,22 +1,16 @@
-// Gestor de audios que mezcla sin repetir hasta agotar todos
-// Se expande automáticamente al añadir más archivos
+// Gestor de audios que nunca repite hasta agotar todos
+// Persistente entre niveles, dificultades y partidas
 
 const BASE_PATH = import.meta.env.BASE_URL || '/juego-sonidos/';
 
-// Configuración de audios - añade más aquí para expandir
+// Configuración de audios
 export const AUDIO_CONFIG = {
-  // Audios normales (se irán añadiendo)
-  normalCount: 53,  // Cantidad de audios normales (1.mp3 - 55.mp3)
-
-  // Audios de error (siempre fijos a 6 por diseño)
-  errorCount: 6,    // Error1.mp3 - Error6.mp3
-
-  // Se puede expandir esto en el futuro sin cambiar el código
-  maxNormalCount: 100,  // Límite superior para expansión futura
+  normalCount: 53,  // Cantidad total de audios normales
+  errorCount: 6,    // Audios de error (siempre fijos)
+  maxNormalCount: 100,
 };
 
 export class AudioManager {
-  private usedNormalIndices: Set<number> = new Set();
   private currentPool: number[] = [];
   private errorPool: number[] = [];
 
@@ -30,10 +24,12 @@ export class AudioManager {
       Array.from({ length: AUDIO_CONFIG.normalCount }, (_, i) => i + 1)
     );
 
-    // Pool de errores siempre fijo
+    // Pool de errores
     this.errorPool = this.shuffle(
       Array.from({ length: AUDIO_CONFIG.errorCount }, (_, i) => i + 1)
     );
+
+    console.log('🔄 AudioManager reiniciado. Pool normal:', this.currentPool.length);
   }
 
   private shuffle<T>(array: T[]): T[] {
@@ -45,46 +41,34 @@ export class AudioManager {
     return shuffled;
   }
 
-  // Obtiene la URL de un sonido normal (sin repetir hasta agotar)
-  getNormalSound(): string {
-    if (this.currentPool.length === 0) {
-      // Reiniciar pool cuando se agoten todos
-      console.log('🔄 Reiniciando pool de audios normales');
-      this.resetPools();
-    }
-
-    const index = this.currentPool.pop()!;
-    return `${BASE_PATH}sounds/${index}.mp3`;
-  }
-
   // Obtiene múltiples URLs de sonidos normales
   getNormalSounds(count: number): string[] {
     const sounds: string[] = [];
 
     for (let i = 0; i < count; i++) {
       if (this.currentPool.length === 0) {
-        // Reiniciar si se agota
-        console.log('🔄 Reiniciando pool de audios normales');
+        // Reiniciar SOLO cuando se agoten todos los audios
+        console.log('🔄 ¡Todos los audios reproducidos! Reiniciando pool...');
         this.resetPools();
       }
       const index = this.currentPool.pop()!;
       sounds.push(`${BASE_PATH}sounds/${index}.mp3`);
     }
 
+    console.log(`🔊 Obtenidos ${count} sonidos. Pool restante: ${this.currentPool.length}`);
     return sounds;
   }
 
-  // Obtiene URL de sonido de error (aleatorio)
+  // Obtiene URL de sonido de error (aleatorio, sin afectar el pool normal)
   getErrorSound(): string {
     const index = this.errorPool[Math.floor(Math.random() * this.errorPool.length)];
     return `${BASE_PATH}sounds/Error${index}.mp3`;
   }
 
-  // Reinicia todos los pools (nueva partida)
-  reset() {
-    this.usedNormalIndices.clear();
+  // Reinicio completo (solo cuando se agotan todos)
+  forceReset() {
     this.resetPools();
-    console.log('🔄 AudioManager reiniciado');
+    console.log('🔄 Reinicio forzado de AudioManager');
   }
 
   // Estadísticas
@@ -92,10 +76,11 @@ export class AudioManager {
     return {
       remainingNormal: this.currentPool.length,
       totalNormal: AUDIO_CONFIG.normalCount,
+      playedNormal: AUDIO_CONFIG.normalCount - this.currentPool.length,
       errorCount: AUDIO_CONFIG.errorCount,
     };
   }
 }
 
-// Instancia global
+// Instancia global y PERSISTENTE
 export const audioManager = new AudioManager();
