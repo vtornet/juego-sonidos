@@ -39,8 +39,7 @@ export async function shareResult(data: ShareData): Promise<boolean> {
     try {
       await navigator.share({
         title: 'Sonido Mortal',
-        text: text,
-        url: 'https://vtornet.github.io/juego-sonidos/'
+        text: text
       });
       return true;
     } catch (err) {
