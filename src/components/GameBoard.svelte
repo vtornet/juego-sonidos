@@ -97,7 +97,12 @@
 <div class="card game-card">
   {#if $game.difficulty && $game.state === 'playing'}
     {@const level = getCurrentLevel($game.difficulty, $game.currentLevelIndex)}
-    <ProgressBar current={$game.correctPressed} total={level.goal} level={level.level} />
+    <ProgressBar
+      current={$game.correctPressed}
+      total={level.goal}
+      level={level.level}
+      difficulty={$game.difficulty}
+    />
 
     <p class="subtitle" style="margin-top: 0.5rem;">¡Evita el SONIDO MORTAL!</p>
 
